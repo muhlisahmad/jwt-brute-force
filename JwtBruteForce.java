@@ -6,8 +6,8 @@ import javax.crypto.Mac;
 import javax.crypto.spec.SecretKeySpec;
 
 public class JwtBruteForce {
-  // private static volatile boolean running = true;
-  private static String candidate = "";
+  private static volatile boolean running = true;
+  private static volatile String candidate = "";
   private static long startTime = 0;
   private static final char[] CHARSET = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()-_+=[]{};:'\",.<>?/\\|`~".toCharArray();
 
@@ -46,52 +46,51 @@ public class JwtBruteForce {
 
     String signingInput = headerB64 + "." + payloadB64;
     
-    // Thread timer = new Thread(() -> {
-    //   long start = System.nanoTime();
-    //   while (running) {
-    //     try {
-    //       Thread.sleep(100);
-    //       long elapsed = System.nanoTime() - start;
-    //       long millis = elapsed / 1_000_000;
-    //       long hundredths = (millis % 1000) / 10;
-    //       long seconds = (millis / 1000) % 60;
-    //       long minutes = (millis / (1000 * 60)) % 60;
-    //       long hours = (millis / (1000 * 60 * 60));
-
-    //       System.out.printf("⏱  Trying: %-30s Time elapsed: %03d:%02d:%02d.%02d\r", candidate, hours, minutes, seconds, hundredths);
-    //     } catch (InterruptedException e) {
-    //       break;
-    //     }
-    //   }
-    // });
-    // timer.setDaemon(true);
-    // timer.start();
-
     startTime = System.nanoTime();
+    
+    Thread timer = new Thread(() -> {
+      while (running) {
+        try {
+          Thread.sleep(100);
+          long elapsed = System.nanoTime() - startTime;
+          long millis = elapsed / 1_000_000;
+          long hundredths = (millis % 1000) / 10;
+          long seconds = (millis / 1000) % 60;
+          long minutes = (millis / (1000 * 60)) % 60;
+          long hours = (millis / (1000 * 60 * 60));
+
+          System.out.printf("⏱  Time elapsed: %03d:%02d:%02d.%02d\r", hours, minutes, seconds, hundredths);
+        } catch (InterruptedException e) {
+          break;
+        }
+      }
+    });
+    timer.setDaemon(true);
+    timer.start();
 
     for (int length = 1; length <= maxLength; length++) {
       if (bruteForce(signingInput, signatureB64, javaAlg, new char[length], 0, startTime)) {
-        // running = false;
+        running = false;
         double total = (System.nanoTime() - startTime) / 1e9;
-        System.out.printf("\n✅ Found secret! : %-30s Total time\t: %.2f seconds%n", total);
+        System.out.printf("\n✅ Found secret! : %-30s Total time: %.2f seconds%n", candidate, total);
         return;
       }
     }
 
-    // running = false;
+    running = false;
     double total = (System.nanoTime() - startTime) / 1e9;
     System.out.printf("\n❌ Secret not found. Total time: %.2f seconds%n", total);
   }
 
   private static boolean bruteForce(String signingInput, String targetSig, String alg, char[] current, int pos, long startTime) throws Exception {
-    long elapsed = System.nanoTime() - startTime;
-    long millis = elapsed / 1_000_000;
-    long hundredths = (millis % 1000) / 10;
-    long seconds = (millis / 1000) % 60;
-    long minutes = (millis / (1000 * 60)) % 60;
-    long hours = (millis / (1000 * 60 * 60));
+    // long elapsed = System.nanoTime() - startTime;
+    // long millis = elapsed / 1_000_000;
+    // long hundredths = (millis % 1000) / 10;
+    // long seconds = (millis / 1000) % 60;
+    // long minutes = (millis / (1000 * 60)) % 60;
+    // long hours = (millis / (1000 * 60 * 60));
 
-    System.out.printf("⏱  Trying: %-30s Time elapsed\t: %03d:%02d:%02d.%02d\r", candidate, hours, minutes, seconds, hundredths);
+    // System.out.printf("⏱  Trying: %-30s Time elapsed\t: %03d:%02d:%02d.%02d\r", candidate, hours, minutes, seconds, hundredths);
 
     if (pos == current.length) {
       candidate = new String(current);
