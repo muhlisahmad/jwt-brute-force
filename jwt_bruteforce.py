@@ -43,19 +43,19 @@ def hmac_base64url(data, key, alg):
     return sig
 
 
-def timer_thread():
-    global running, candidate, start_time
-    while running:
-        elapsed = time.time() - start_time
-        hours = int(elapsed // 3600)
-        minutes = int((elapsed % 3600) // 60)
-        seconds = int(elapsed % 60)
-        hundredths = int((elapsed - int(elapsed)) * 100)
-        sys.stdout.write(
-            f"⏱  Trying      : {candidate:<30} Time elapsed  : {hours:03d}:{minutes:02d}:{seconds:02d}.{hundredths:02d}\r"
-        )
-        sys.stdout.flush()
-        time.sleep(0.1)
+# def timer_thread():
+    # global running, candidate, start_time
+    # while running:
+        # elapsed = time.time() - start_time
+        # hours = int(elapsed // 3600)
+        # minutes = int((elapsed % 3600) // 60)
+        # seconds = int(elapsed % 60)
+        # hundredths = int((elapsed - int(elapsed)) * 100)
+        # sys.stdout.write(
+        #     f"⏱  Trying      : {candidate:<30} Time elapsed  : {hours:03d}:{minutes:02d}:{seconds:02d}.{hundredths:02d}\r"
+        # )
+        # sys.stdout.flush()
+        # time.sleep(0.1)
 
 
 def brute_force(signing_input, target_sig, alg, length, pos, current):
