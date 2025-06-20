@@ -55,7 +55,7 @@ def timer_thread():
             f"⏱  Trying      : {candidate:<30} Time elapsed  : {hours:03d}:{minutes:02d}:{seconds:02d}.{hundredths:02d}\r"
         )
         sys.stdout.flush()
-        ## time.sleep(0.1)
+        time.sleep(0.1)
 
 
 def brute_force(signing_input, target_sig, alg, length, pos, current):
