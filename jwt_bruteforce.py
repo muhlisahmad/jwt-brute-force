@@ -3,11 +3,11 @@ import hashlib
 import hmac
 import json
 import sys
-import threading
+# import threading
 import time
 
 # Global state
-running = True
+# running = True
 candidate = ""
 start_time = 0
 
@@ -72,7 +72,7 @@ def brute_force(signing_input, target_sig, alg, length, pos, current):
 
 
 def main():
-    global running, start_time
+    global start_time
     jwt = input("Enter JWT token\t		: ").strip()
     try:
         max_length = int(input("Enter max secret length to try\t: ").strip())
@@ -100,19 +100,19 @@ def main():
 
     # Start timer
     start_time = time.time()
-    t = threading.Thread(target=timer_thread)
-    t.daemon = True
-    t.start()
+    # t = threading.Thread(target=timer_thread)
+    # t.daemon = True
+    # t.start()
 
     # Brute-force
     for length in range(1, max_length + 1):
         if brute_force(signing_input, signature_b64, alg, length, 0, [''] * length):
-            running = False
+            # running = False
             total = time.time() - start_time
             print(f"\n✅ Found secret!   : {candidate:<30} Total time  : {total:.2f} seconds")
             return
 
-    running = False
+    # running = False
     total = time.time() - start_time
     print(f"\n❌ Secret not found. Total time  : {total:.2f} seconds")
 
